@@ -3,12 +3,13 @@ from PySide6.QtCore import Signal, QStandardPaths
 from pathlib import Path
 import json
 from cryptography.fernet import Fernet
-from object_16_ui import Ui_Dialog
-from objects import Id16
-from object_manager import ObjectsManager
-from entities import EntityManager
+from Eobject_16_ui import Ui_Dialog
+from temp_objects import Id16
+from temp_events import Events
+from step_2_of_event_creation import Event_properties
+import symbols
 
-class Object_16(QWidget, Ui_Dialog):
+class EObject_16(QWidget, Ui_Dialog):
     cancel_clicked = Signal()
     sums_type = "Ordered"
     ENCRYPTION_KEY = 'Rll0H4fZf5TvH1E-mk0qwcZ1cETu6jlA_2PiwZ9cvls='
@@ -19,30 +20,38 @@ class Object_16(QWidget, Ui_Dialog):
     documents_dir = m_app_folder
     untitled_x = 1 # Use to name the untitled files of the Save As Window
     
-    def __init__(self):
+    close_by_code_initiated = Signal()
+    
+    def __init__(self, top_window, event_name):
         super().__init__()
         self.setupUi(self)
         self.spinBox.setRange(1, 1000)
         self.spinBox.setValue(1)
-        self.pushButton.setEnabled(False)
         self.label_5.hide()
         self.label_3.hide()
+        self.top_window = top_window
+        self.event_name = event_name
         
         self.pushButton_2.clicked.connect(self.cancel_clicked.emit)
         
-        self.lineEdit_3.textChanged.connect(self.check_if_name_exist)
+        # self.lineEdit_3.textChanged.connect(self.check_if_name_exist)
+        
+        #### Problem 001
+        self.lineEdit_3.setText(f"{self.event_name}'s object")
+        self.lineEdit_3.setEnabled(False)
+        ####
         
         sums = QButtonGroup(self)
         self.radioButton.setChecked(True)
         sums.addButton(self.radioButton)
         sums.addButton(self.radioButton_2)
-        sums.buttonClicked.connect(self.sums_clicked)
+        # sums.buttonClicked.connect(self.sums_clicked)
         
         self.pushButton_4.setToolTip(f"Save this object creation session")
         self.pushButton_5.setToolTip("Save this object creation session")
         self.pushButton_6.setToolTip("Load object creation session with object id '16'")
         
-        self.config_data = {"object_id": "16", "object_name": str, "limit_of_sum": int, "sum_type": str, "order_matters": bool}
+        self.config_data = {"object_id": "16", "object_name": "", "limit_of_sum": 1, "sum_type": "", "order_matters": False}
         
         self.pushButton_4.clicked.connect(self.save_config)
         self.pushButton_5.clicked.connect(self.save_as_config)
@@ -52,29 +61,29 @@ class Object_16(QWidget, Ui_Dialog):
         
         self.pushButton.clicked.connect(self.create_object)
         
-    def check_if_name_exist(self) -> None:
-        name = self.lineEdit_3.text().strip()
+    # def check_if_name_exist(self) -> None:
+    #     name = self.lineEdit_3.text().strip()
         
-        if not(name):
-            self.pushButton.setEnabled(False)
-        elif (name, "object") in EntityManager._items:
-            self.label_5.setText("❌ An object with the same name already exists")
-            self.label_5.show()
-            self.pushButton.setEnabled(False)
-        elif EntityManager.name_exists_with_different_type(EntityManager, name, "object"):
-            self.label_5.setText("⚠️ An event or system with the same name already exists")
-            self.label_5.show()
-            self.pushButton.setEnabled(True)
-        else:
-            self.label_5.hide()
-            self.pushButton.setEnabled(True)
+    #     if not(name):
+    #         self.pushButton.setEnabled(False)
+    #     elif (name, "object") in EntityManager._items:
+    #         self.label_5.setText("❌ An object with the same name already exists")
+    #         self.label_5.show()
+    #         self.pushButton.setEnabled(False)
+    #     elif EntityManager.name_exists_with_different_type(EntityManager, name, "object"):
+    #         self.label_5.setText("⚠️ An event or system with the same name already exists")
+    #         self.label_5.show()
+    #         self.pushButton.setEnabled(True)
+    #     else:
+    #         self.label_5.hide()
+    #         self.pushButton.setEnabled(True)
             
-    def sums_clicked(self):
-        if self.radioButton_2.isChecked():
-            self.sums_type = "Unordered"
-        elif self.radioButton.isChecked():
-            self.sums_type = "Ordered"
-        print(self.sums_type)
+    # def sums_clicked(self):
+    #     if self.radioButton_2.isChecked():
+    #         self.sums_type = "Unordered"
+    #     elif self.radioButton.isChecked():
+    #         self.sums_type = "Ordered"
+    #     print(self.sums_type)
             
     def get_config_data(self) -> dict:
         self.config_data["object_name"] = self.lineEdit_3.text().strip()
@@ -147,40 +156,37 @@ class Object_16(QWidget, Ui_Dialog):
 
     def load_config(self, config_data):
             if config_data["object_id"] == "16":
-                self.lineEdit_3.setText(config_data["object_name"])
+                # self.lineEdit_3.setText(config_data["object_name"])
                 self.spinBox.setValue(config_data["limit_of_sum"])
                 self.sums_type = config_data["sum_type"]
-                
+                # print("Functioning*")
                 if self.sums_type == "Ordered":
                     self.radioButton.setChecked(True)
+                    # print("Functioning")
                 elif self.sums_type == "Unordered":
                     self.radioButton_2.setChecked(True)
+                #### Problem 001
+                self.lineEdit_3.setText(f"{self.event_name}'s object")
+                self.lineEdit_3.setEnabled(False)
+                ####
+            else:
+                QMessageBox.warning(self, "Error", f"The object type of the loaded file has id {config_data["object_id"]} which doesn't correspond to the id of the present object creation\n\nSearch for the id {config_data["object_id"]} in the search bar and load this file into it")
                 
     def create_object(self) -> None:
-        name = self.lineEdit_3.text().strip()
         n = self.spinBox.value()
         sums = self.sums_type
-
-        if EntityManager.name_exists_with_different_type(EntityManager, name, "object") == True:
-                ret = QMessageBox.warning(self, "Warning", "An object with the same name already exists", QMessageBox.Ok | QMessageBox.Cancel)
-                if ret == QMessageBox.Ok:
-                    obj = Id16(name, n, sums)
-                    ObjectsManager.add(ObjectsManager, obj)
-                    print(obj.number_system)
-                    self.label_3.setText(f"Object '{name.strip()}' created")
-                    self.label_3.show()
-                    self.lineEdit_3.clear()
-                    self.pushButton.setEnabled(False)
-                if ret == QMessageBox.Cancel:
-                    self.lineEdit_3.clear()
-                    self.pushButton.setEnabled(False)
-        else:
-            obj = Id16(name, n, sums)
-            ObjectsManager.add(ObjectsManager, obj)
-            print(obj.number_system)
-            self.label_3.setText(f"Object '{name.strip()}' created")
-            self.label_3.show()
-            self.lineEdit_3.clear()
-            self.pushButton.setEnabled(False)
-        print(EntityManager._items)
-        self.pushButton.setEnabled(False)
+        
+        obj = Id16(n, sums)
+        event = Events(self.event_name, obj.number_system)
+        window = Event_properties(event)
+        self.top_window.hide()
+        window.exec()
+        self.close_by_code_initiated.emit()
+        return
+    
+    def sums_clicked(self):
+        if self.radioButton_2.isChecked():
+            self.sums_type = "Unordered"
+        elif self.radioButton.isChecked():
+            self.sums_type = "Ordered"
+        # print(self.sums_type)

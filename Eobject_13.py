@@ -35,6 +35,7 @@ class EObject_13(QWidget, Ui_Dialog):
     m_app_folder.mkdir(parents=True, exist_ok=True)
     documents_dir = m_app_folder
     untitled_x = 1 # Use to name the untitled files of the Save As Window
+    
     close_by_code_initiated = Signal()
     
     def __init__(self, stacked_widget, top_window, event_name):

@@ -321,13 +321,11 @@ class Id16():
         super().__init__()
         
         self.object_type_id = "16"
-        self.limit_of_sum = limit_of_sum
-        self.sums_type = sums
         if sums == "Ordered":
             order = True
         else:
             order = False
-        print(order)
+        # print(order)
         self.number_of_elements, self.number_system = systems.system_16(limit_of_sum, order)
         # for i in self.number_system_gen:
         #     self.number_system.append(i)

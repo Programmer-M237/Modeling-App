@@ -20,7 +20,7 @@ from Eobject_12 import EObject_12
 from Eobject_13 import EObject_13
 from Eobject_14 import EObject_14
 from Eobject_15 import EObject_15
-from object_16 import Object_16
+from Eobject_16 import EObject_16
 from object_17 import Object_17
 from object_18 import Object_18
 from object_19 import Object_19
@@ -71,7 +71,7 @@ class Create_new_Eobject(QDialog):
         self.page_13.name = "page_13"
         self.page_14 = EObject_14(self, event_name)
         self.page_15 = EObject_15(self, event_name)
-        self.page_16 = Object_16()
+        self.page_16 = EObject_16(self, event_name)
         self.page_17 = Object_17()
         self.page_18 = Object_18()
         self.page_19 = Object_19()
@@ -229,6 +229,7 @@ class Create_new_Eobject(QDialog):
         self.page_13.close_by_code_initiated.connect(self.closed_by_code)
         self.page_14.close_by_code_initiated.connect(self.closed_by_code)
         self.page_15.close_by_code_initiated.connect(self.closed_by_code)
+        self.page_16.close_by_code_initiated.connect(self.closed_by_code)
         
     def populate_tree(self):
         self.ui.treeWidget.clear()
