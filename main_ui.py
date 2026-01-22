@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'main_ui.ui'
+## Form generated from reading UI file 'main.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.9.1
+## Created by: Qt User Interface Compiler version 6.10.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -134,6 +134,7 @@ class Ui_MainWindow(object):
 
         self.entities_scrollArea = QScrollArea(self.entities_panel)
         self.entities_scrollArea.setObjectName(u"entities_scrollArea")
+        self.entities_scrollArea.setFrameShape(QFrame.Shape.StyledPanel)
         self.entities_scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
