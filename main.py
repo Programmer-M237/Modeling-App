@@ -1,8 +1,9 @@
 from PySide6.QtWidgets import QMainWindow, QApplication
-from main_ui import Ui_MainWindow # Main app UI
+from main_ui import Ui_MainWindow  # Main app UI
 from create_object_window import Create_new_object
 from create_event_window import Create_new_event
 import sys
+
 
 class Modeling_App(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -21,6 +22,7 @@ class Modeling_App(QMainWindow, Ui_MainWindow):
     def create_event(self):
         create_event_win = Create_new_event()
         create_event_win.exec()
+        
         
 if __name__ == "__main__":
     app = QApplication(sys.argv)
